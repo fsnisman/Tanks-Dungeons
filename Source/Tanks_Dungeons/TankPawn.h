@@ -32,8 +32,14 @@ public:
 	UFUNCTION()
 		void Fire();
 
+	UFUNCTION()
+		void FireSpecial();
+
+	UFUNCTION()
+		void SetupCannon(TSubclassOf<ACannon> InCannonClass);
+
 protected:
-	void SetupCannon();
+	
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")

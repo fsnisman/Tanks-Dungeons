@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameStructs.h"
+#include "ProjecTile.h"
 #include "GameFramework/Actor.h"
 #include "Cannon.generated.h"
 
@@ -32,6 +33,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
       ECannonType Type = ECannonType::FireProjectile;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		TSubclassOf<AProjecTile> ProjecTileClass;
+
 	FTimerHandle ReloadTimerHandle;
 
 	bool ReadyToFire = false;
@@ -41,6 +45,7 @@ public:
 	ACannon();
 
 	void Fire();
+	void FireSpecial();
 	bool IsReadyToFire();
 
 protected:

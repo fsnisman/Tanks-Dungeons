@@ -2,6 +2,7 @@
 
 
 #include "Cannon.h"
+#include "DrawDebugHelpers.h"
 #include "Components/ArrowComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
@@ -34,13 +35,64 @@ void ACannon::Fire()
 	if (Type == ECannonType::FireProjectile)
 	{
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
+
+		FTransform projectileTransform(ProjectileSpawnPoint->GetComponentRotation(), ProjectileSpawnPoint->GetComponentLocation(), FVector(1));
+
+		AProjecTile* projectile = GetWorld()->SpawnActor<AProjecTile>(ProjecTileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+		if (projectile) 
+		{
+			projectile->Start();
+		}
 	}
-	else
+	else 
 	{
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Orange, "Fire - trace");
+
+		FHitResult hitResult;
+		FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+		traceParams.bTraceComplex = true;
+		traceParams.bReturnPhysicalMaterial = false;
+
+		FVector start = ProjectileSpawnPoint->GetComponentLocation();
+		FVector end = ProjectileSpawnPoint->GetForwardVector() * FireRange + start;
+
+		if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_Visibility, traceParams))
+		{
+			DrawDebugLine(GetWorld(), start, hitResult.Location, FColor::Yellow, false, 0.5f, 0, 5);
+			if (hitResult.Actor.Get())
+			{
+				hitResult.Actor.Get()->Destroy();
+			}
+		}
+		else
+		{
+			DrawDebugLine(GetWorld(), start, end, FColor::Orange, false, 0.5f, 0, 5);
+		}
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
+}
+
+void ACannon::FireSpecial()
+{
+	if (!ReadyToFire)
+	{
+		return;
+	}
+	ReadyToFire = false;
+
+	if (Type == ECannonType::FireSpecial)
+	{
+		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - special");
+
+		FTransform projectileTransform(ProjectileSpawnPoint->GetComponentRotation(), ProjectileSpawnPoint->GetComponentLocation(), FVector(3));
+
+		AProjecTile* projectile = GetWorld()->SpawnActor<AProjecTile>(ProjecTileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+		if (projectile)
+		{
+			projectile->Start();
+		}
+	}
 }
 
 bool ACannon::IsReadyToFire()
