@@ -23,7 +23,8 @@ AProjecTile::AProjecTile()
 
 void AProjecTile::Start()
 {
-	GetWorld()->GetTimerManager().SetTimer(MovementTimerHandle, this, &AProjecTile::Move, MoveRate, true, MoveRate);	
+	GetWorld()->GetTimerManager().SetTimer(MovementTimerHandle, this, &AProjecTile::Move, MoveRate, true, MoveRate);
+	SetLifeSpan(FlyRange / MoveSpeed);
 }
 
 // Called every frame

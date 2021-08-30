@@ -2,6 +2,7 @@
 
 
 #include "TankPawn.h"
+#include "Cannon.h"
 #include <Camera/CameraComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include "Components/ArrowComponent.h"
@@ -61,31 +62,50 @@ void ATankPawn::BeginPlay()
 
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> InCannonClass)
 {
-	if (Cannon)
+	if (ActiveCannon)
 	{
-		Cannon->Destroy();
+		ActiveCannon->Destroy();
+		ActiveCannon = nullptr;
 	}
 
 	FActorSpawnParameters params;
 	params.Instigator = this;
 	params.Owner = this;
-	Cannon = GetWorld()->SpawnActor<ACannon>(InCannonClass, params);
-	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	ActiveCannon = GetWorld()->SpawnActor<ACannon>(InCannonClass, params);
+	ActiveCannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+}
+
+void ATankPawn::SwapCannon()
+{
+	Swap(ActiveCannon, InactiveCannon);
+	if (ActiveCannon)
+	{
+		ActiveCannon->SetVisibility(true);
+	}
+	if (InactiveCannon)
+	{
+		InactiveCannon->SetVisibility(false);
+	}
+}
+
+ACannon* ATankPawn::GetActiveCannon() const
+{
+	return ActiveCannon;
 }
 
 void ATankPawn::Fire()
 {
-	if (Cannon)
+	if (ActiveCannon)
 	{
-		Cannon->Fire();
+		ActiveCannon->Fire();
 	}
 }
 
 void ATankPawn::FireSpecial()
 {
-	if (Cannon)
+	if (ActiveCannon)
 	{
-		Cannon->FireSpecial();
+		ActiveCannon->FireSpecial();
 	}
 
 }

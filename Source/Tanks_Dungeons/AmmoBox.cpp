@@ -3,6 +3,7 @@
 
 #include "AmmoBox.h"
 #include "TankPawn.h"
+#include "Cannon.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SceneComponent.h"
 #include "Engine/World.h"
@@ -33,7 +34,15 @@ void AAmmoBox::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 	ATankPawn* playerPawn = Cast<ATankPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if (OtherActor == playerPawn)
 	{
-		playerPawn->SetupCannon(CannonClass);
+		ACannon* Cannon = playerPawn->GetActiveCannon();
+		if (Cannon && Cannon->GetClass() == CannonClass)
+		{
+			Cannon->AddAmmo(NumAmmo);
+		}
+		else
+		{
+			playerPawn->SetupCannon(CannonClass);
+		}
 		Destroy();
 	}
 }

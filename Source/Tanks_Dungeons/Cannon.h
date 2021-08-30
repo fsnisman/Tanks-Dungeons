@@ -53,9 +53,15 @@ public:
 	// Sets default values for this actor's properties
 	ACannon();
 
+	int32 NumAmmo = 0;
+	int32 NumAmmoSpecial = 0;
+
 	void Fire();
 	void FireSpecial();
 	bool IsReadyToFire();
+	void SetVisibility(bool bIsVisible);
+	void AddAmmo(int32 InNumAmmo);
+	void AddAmmoSpecial(int32 InNumAmmo);
 
 protected:
 	// Called when the game starts or when spawned

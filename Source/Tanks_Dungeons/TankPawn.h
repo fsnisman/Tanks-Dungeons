@@ -38,6 +38,12 @@ public:
 	UFUNCTION()
 		void SetupCannon(TSubclassOf<ACannon> InCannonClass);
 
+	UFUNCTION()
+		void SwapCannon();
+
+	UFUNCTION()
+		ACannon* GetActiveCannon() const;
+
 protected:
 	
 
@@ -64,7 +70,10 @@ protected:
 		ATankPlayerController* TankController;
 
 	UPROPERTY()
-		ACannon* Cannon;
+		ACannon* ActiveCannon;
+
+	UPROPERTY()
+		ACannon* InactiveCannon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 100.f;

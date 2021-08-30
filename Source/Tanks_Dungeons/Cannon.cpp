@@ -19,9 +19,27 @@ ACannon::ACannon()
 
 	Mesh = CreateAbstractDefaultSubobject<UStaticMeshComponent>(TEXT("Cannon mesh"));
 	Mesh->SetupAttachment(RootComponent);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	ProjectileSpawnPoint = CreateAbstractDefaultSubobject<UArrowComponent>(TEXT("Spawn point"));
 	ProjectileSpawnPoint->SetupAttachment(Mesh);
+}
+
+void ACannon::SetVisibility(bool bIsVisible)
+{
+	Mesh->SetHiddenInGame(!bIsVisible);
+}
+
+void ACannon::AddAmmo(int32 InNumAmmo)
+{
+	NumAmmo = FMath::Clamp(NumAmmo + InNumAmmo, 0, MaxAmmo);
+	UE_LOG(LogTemp, Log, TEXT("AddAmmo(%d)! NumAmmo: %d"), InNumAmmo, NumAmmo);
+}
+
+void ACannon::AddAmmoSpecial(int32 InNumAmmo)
+{
+	NumAmmoSpecial = FMath::Clamp(NumAmmoSpecial + InNumAmmo, 0, MaxAmmoSpecial);
+	UE_LOG(LogTemp, Log, TEXT("AddAmmo(%d)! NumAmmo: %d"), InNumAmmo, NumAmmoSpecial);
 }
 
 void ACannon::Fire()
@@ -30,14 +48,14 @@ void ACannon::Fire()
 	{
 		return;
 	}
-	if(MaxAmmo <= 0)
+	if(NumAmmo <= 0)
 	{
 		GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, "No Ammo");
 		return;
 	}
 	ReadyToFire = false;
 
-	--MaxAmmo;
+	--NumAmmo;
 
 	if (Type == ECannonType::FireProjectile)
 	{
@@ -87,14 +105,14 @@ void ACannon::FireSpecial()
 	{
 		return;
 	}
-	if(MaxAmmoSpecial <= 0)
+	if(NumAmmoSpecial <= 0)
 	{
 		GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, "No Ammo");
 		return;
 	}
 	ReadyToFire = false;
 
-	--MaxAmmoSpecial;
+	--NumAmmoSpecial;
 
 	if (Type == ECannonType::FireProjectile)
 	{
@@ -130,6 +148,8 @@ void ACannon::Reload()
 void ACannon::BeginPlay()
 {
 	Super::BeginPlay();
+	NumAmmo = MaxAmmo;
+	NumAmmoSpecial = MaxAmmoSpecial;
 	Reload();
 }
 
