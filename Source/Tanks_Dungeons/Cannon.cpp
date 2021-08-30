@@ -26,11 +26,18 @@ ACannon::ACannon()
 
 void ACannon::Fire()
 {
-	if (!ReadyToFire) 
+	if (!ReadyToFire)
 	{
 		return;
 	}
+	if(MaxAmmo <= 0)
+	{
+		GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, "No Ammo");
+		return;
+	}
 	ReadyToFire = false;
+
+	--MaxAmmo;
 
 	if (Type == ECannonType::FireProjectile)
 	{
@@ -75,24 +82,37 @@ void ACannon::Fire()
 
 void ACannon::FireSpecial()
 {
+
 	if (!ReadyToFire)
 	{
 		return;
 	}
+	if(MaxAmmoSpecial <= 0)
+	{
+		GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, "No Ammo");
+		return;
+	}
 	ReadyToFire = false;
 
-	if (Type == ECannonType::FireSpecial)
+	--MaxAmmoSpecial;
+
+	if (Type == ECannonType::FireProjectile)
 	{
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - special");
+		for (int i = 0; i < 3; i++) {
 
-		FTransform projectileTransform(ProjectileSpawnPoint->GetComponentRotation(), ProjectileSpawnPoint->GetComponentLocation(), FVector(3));
+			GEngine->AddOnScreenDebugMessage(0, 1, FColor::Green, "Fire - special");
 
-		AProjecTile* projectile = GetWorld()->SpawnActor<AProjecTile>(ProjecTileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
-		if (projectile)
-		{
-			projectile->Start();
+			FTransform projectileTransform(ProjectileSpawnPoint->GetComponentRotation(), ProjectileSpawnPoint->GetComponentLocation(), FVector(1));
+
+			AProjecTile* projectile = GetWorld()->SpawnActor<AProjecTile>(ProjecTileClassSpecial, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+			if (projectile)
+			{
+				projectile->Start();
+			}
 		}
 	}
+
+	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 0.1f, false);
 }
 
 bool ACannon::IsReadyToFire()
@@ -104,6 +124,7 @@ void ACannon::Reload()
 {
 	ReadyToFire = true;
 }
+
 
 // Called when the game starts or when spawned
 void ACannon::BeginPlay()

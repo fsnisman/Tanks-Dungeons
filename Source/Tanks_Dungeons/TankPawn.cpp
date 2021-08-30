@@ -87,6 +87,7 @@ void ATankPawn::FireSpecial()
 	{
 		Cannon->FireSpecial();
 	}
+
 }
 
 // Called every frame
@@ -95,7 +96,7 @@ void ATankPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Tank Movement
-	CurrentForwardAxisValue = FMath::Lerp(CurrentForwardAxisValue, TargetForwardAxisValue, ForwardSmootheness);
+	CurrentForwardAxisValue = FMath::FInterpTo(CurrentForwardAxisValue, TargetForwardAxisValue, DeltaTime, ForwardSmootheness);
 	TargetForwardAxisValue = CurrentForwardAxisValue;
 
 	FVector CurrentLocation = GetActorLocation();
@@ -105,7 +106,7 @@ void ATankPawn::Tick(float DeltaTime)
 	SetActorLocation(MovePosition, true);
 
 	// Tank Rotation
-	CurrentRightAxisValue = FMath::Lerp(CurrentRightAxisValue, TargetRightAxisValue, RotationSmootheness);
+	CurrentRightAxisValue = FMath::FInterpTo(CurrentRightAxisValue, TargetRightAxisValue, DeltaTime, RotationSmootheness);
 	TargetRightAxisValue = CurrentRightAxisValue;
 
 	//UE_LOG(LogTemp, Warning, TEXT("CurrentRightAxisValue = %f TargetRightAxisValue = %f"), CurrentRightAxisValue, TargetRightAxisValue);
@@ -125,6 +126,6 @@ void ATankPawn::Tick(float DeltaTime)
 		FRotator currRotation = TurretMesh->GetComponentRotation();
 		targetRotation.Pitch = currRotation.Pitch;
 		targetRotation.Roll = currRotation.Roll;
-		TurretMesh->SetWorldRotation(FMath::Lerp(currRotation, targetRotation, TurretRotationSmootheness));
+		TurretMesh->SetWorldRotation(FMath::RInterpConstantTo(currRotation, targetRotation, DeltaTime, TurretRotationSpeed));
 	}
 }

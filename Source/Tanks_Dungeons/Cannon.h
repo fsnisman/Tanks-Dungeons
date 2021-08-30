@@ -31,10 +31,19 @@ protected:
 		float FireDamage = 1.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-      ECannonType Type = ECannonType::FireProjectile;
+        ECannonType Type = ECannonType::FireProjectile;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		TSubclassOf<AProjecTile> ProjecTileClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		TSubclassOf<AProjecTile> ProjecTileClassSpecial;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		int32 MaxAmmo = 15;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
+		int32 MaxAmmoSpecial = 50;
 
 	FTimerHandle ReloadTimerHandle;
 

@@ -13,6 +13,5 @@
 UENUM(BlueprintType)
 enum class ECannonType : uint8 {
 	FireProjectile = 0 UMETA(DisplayName = "Use projectile"),
-	FireTrace = 1 UMETA(DisplayName = "Use trace"),
-	FireSpecial = 2 UMETA(DisplayName = "Use special")
+	FireTrace = 1 UMETA(DisplayName = "Use trace")
 };
