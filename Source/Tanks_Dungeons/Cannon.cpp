@@ -88,7 +88,20 @@ void ACannon::Fire()
 			{
 				hitResult.Actor.Get()->Destroy();
 			}
+			else if (IDamageTraker* DamageTraker = Cast<IDamageTraker>(hitResult.Actor))
+			{
+				AActor* MyInstigator = GetInstigator();
+				if (hitResult.Actor != MyInstigator)
+				{
+					FDamageData DamageData;
+					DamageData.DamageValue = FireDamage;
+					DamageData.DamageMaker = this;
+					DamageData.Instigator = MyInstigator;
+					DamageTraker->TakeDamage(DamageData);
+				}
+			}
 		}
+		
 		else
 		{
 			DrawDebugLine(GetWorld(), start, end, FColor::Orange, false, 0.5f, 0, 5);

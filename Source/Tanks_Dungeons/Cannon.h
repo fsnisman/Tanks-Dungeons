@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameStructs.h"
 #include "ProjecTile.h"
+#include "DamageTraker.h"
 #include "GameFramework/Actor.h"
 #include "Cannon.generated.h"
 
