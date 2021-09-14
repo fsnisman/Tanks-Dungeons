@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Cannon.h"
+#include "Components/BoxComponent.h"
+#include "DamageTraker.h"
+#include "HealthComponent.h"
 #include "TankPawn.generated.h"
 
 
@@ -15,7 +18,7 @@ class UCameraComponent;
 class ACannon;
 
 UCLASS()
-class TANKS_DUNGEONS_API ATankPawn : public APawn
+class TANKS_DUNGEONS_API ATankPawn : public APawn, public IDamageTraker
 {
 	GENERATED_BODY()
 
@@ -42,10 +45,17 @@ public:
 		void SwapCannon();
 
 	UFUNCTION()
+		void TakeDamage(FDamageData DamageData) override;
+
+	UFUNCTION()
 		ACannon* GetActiveCannon() const;
 
 protected:
-	
+	UFUNCTION()
+		void Die();
+
+	UFUNCTION()
+		void DamageTaked(float DamageValue);
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -65,6 +75,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
 		TSubclassOf<ACannon> CannonClass;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UHealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UBoxComponent* HitCollider;
+
 
 	UPROPERTY()
 		ATankPlayerController* TankController;

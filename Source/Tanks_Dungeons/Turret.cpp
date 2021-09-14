@@ -24,6 +24,10 @@ ATurret::ATurret()
 	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
 	HitCollider->SetupAttachment(TurretMesh);
 
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
+	HealthComponent->OnDie.AddDynamic(this, &ATurret::Die);
+	HealthComponent->OnDamaged.AddDynamic(this, &ATurret::DamageTaken);
+
 	UStaticMesh* turretMeshTemp = LoadObject<UStaticMesh>(this, *TurretMeshPath);
 	if (turretMeshTemp)
 	{
@@ -105,5 +109,16 @@ void ATurret::Fire()
 
 void ATurret::TakeDamage(FDamageData DamageData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Turret %s taked damage:%f "), *GetName(), DamageData.DamageValue);
+	HealthComponent->TakeDamage(DamageData);
 }
+
+void ATurret::Die()
+{
+	Destroy();
+}
+
+void ATurret::DamageTaken(float InDamage)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Turret %s taked damage:%f "), *GetName(), InDamage);
+}
+

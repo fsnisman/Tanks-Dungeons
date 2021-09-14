@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "DamageTraker.h"
 #include "ProjecTile.generated.h"
 
 class UStaticMeshComponent;

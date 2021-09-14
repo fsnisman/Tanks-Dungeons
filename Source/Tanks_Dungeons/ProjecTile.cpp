@@ -2,8 +2,10 @@
 
 
 #include "Components/StaticMeshComponent.h"
-#include "TimerManager.h"
 #include "ProjecTile.h"
+#include "TimerManager.h"
+#include "DamageTraker.h"
+
 
 // Sets default values
 AProjecTile::AProjecTile()
@@ -31,10 +33,24 @@ void AProjecTile::Start()
 void AProjecTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
+
 	if (OtherComp && OtherComp->GetCollisionObjectType() == ECollisionChannel::ECC_Destructible)
 	{
 		OtherActor->Destroy();
 	}
+	else if (IDamageTraker* DamageTraker = Cast<IDamageTraker>(OtherActor)) 
+	{
+		AActor* MyInstigator = GetInstigator();
+		if (OtherActor != MyInstigator)
+		{
+			FDamageData DamageData;
+			DamageData.DamageValue = Damage;
+			DamageData.DamageMaker = this;
+			DamageData.Instigator = MyInstigator;
+			DamageTraker->TakeDamage(DamageData);
+		}
+	}
+	
 	Destroy();
 }
 

@@ -7,16 +7,17 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "Cannon.h"
+#include "DamageTraker.h"
+#include "HealthComponent.h"
 #include "Turret.generated.h"
 
 UCLASS()
-class TANKS_DUNGEONS_API ATurret : public AActor
+class TANKS_DUNGEONS_API ATurret : public AActor, public IDamageTraker
 {
 	GENERATED_BODY()
 
 public:
-    UFUNCTION()
-        void TakeDamage(FDamageData DamageData);
+
 
 protected:
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -27,6 +28,9 @@ protected:
         UArrowComponent* CannonSetupPoint;
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
         UBoxComponent* HitCollider;
+
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+        UHealthComponent* HealthComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
         TSubclassOf<ACannon> CannonClass;
@@ -51,7 +55,8 @@ protected:
 public:
     ATurret();
 
-
+    UFUNCTION()
+        void TakeDamage(FDamageData DamageData) override;
 
 protected:
     virtual void Destroyed() override;
@@ -61,4 +66,10 @@ protected:
     bool CanFire();
     void Fire();
 	virtual void BeginPlay() override;
+
+    UFUNCTION()
+        void Die();
+
+    UFUNCTION()
+        void DamageTaken(float InDamage);
 };

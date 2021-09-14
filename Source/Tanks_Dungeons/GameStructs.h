@@ -6,9 +6,18 @@
 #include "UObject/NoExportTypes.h"
 #include "GameStructs.generated.h"
 
-/**
- * 
- */
+USTRUCT()
+struct FDamageData
+{
+    GENERATED_BODY()
+
+        UPROPERTY()
+        float DamageValue;
+    UPROPERTY()
+        AActor* Instigator;
+    UPROPERTY()
+        AActor* DamageMaker;
+};
 
 UENUM(BlueprintType)
 enum class ECannonType : uint8 {
