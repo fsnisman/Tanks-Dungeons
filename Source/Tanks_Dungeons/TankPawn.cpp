@@ -151,11 +151,7 @@ void ATankPawn::Tick(float DeltaTime)
 	if (TankController) 
 	{
 		FVector mousePos = TankController->GetMousePos();
-		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), mousePos);
-		FRotator currRotation = TurretMesh->GetComponentRotation();
-		targetRotation.Pitch = currRotation.Pitch;
-		targetRotation.Roll = currRotation.Roll;
-		TurretMesh->SetWorldRotation(FMath::RInterpConstantTo(currRotation, targetRotation, DeltaTime, TurretRotationSpeed));
+		RotateTurretTo(mousePos);
 	}
 }
 
@@ -181,4 +177,23 @@ void ATankPawn::TargetDestroyed(AActor* Target)
 		AccumulatedScores += Scorable->GetScores();
 		UE_LOG(LogTemp, Log, TEXT("Destroyed target %s. Curret scores: %d"), *Target->GetName(), AccumulatedScores);
 	}
+}
+
+FVector ATankPawn::GetTurretForwardVector()
+{
+	return TurretMesh->GetForwardVector();
+}
+
+void ATankPawn::RotateTurretTo(FVector TargetPosition)
+{
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
+	FRotator currRotation = TurretMesh->GetComponentRotation();
+	targetRotation.Pitch = currRotation.Pitch;
+	targetRotation.Roll = currRotation.Roll;
+	TurretMesh->SetWorldRotation(FMath::RInterpConstantTo(currRotation, targetRotation, GetWorld()->GetDeltaSeconds(), TurretRotationSpeed));
+}
+
+FVector ATankPawn::GetEyesPosition()
+{
+	return CannonSetupPoint->GetComponentLocation();
 }

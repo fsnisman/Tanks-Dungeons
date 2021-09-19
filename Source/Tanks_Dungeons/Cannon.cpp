@@ -23,6 +23,12 @@ ACannon::ACannon()
 
 	ProjectileSpawnPoint = CreateAbstractDefaultSubobject<UArrowComponent>(TEXT("Spawn point"));
 	ProjectileSpawnPoint->SetupAttachment(Mesh);
+
+	ShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting effect"));
+	ShootEffect->SetupAttachment(ProjectileSpawnPoint);
+
+	AudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("Shoot audio effect"));
+	AudioEffect->SetupAttachment(ProjectileSpawnPoint);
 }
 
 void ACannon::SetVisibility(bool bIsVisible)
@@ -54,6 +60,9 @@ void ACannon::Fire()
 		return;
 	}
 	ReadyToFire = false;
+
+	ShootEffect->ActivateSystem();
+	AudioEffect->Play();
 
 	--NumAmmo;
 
