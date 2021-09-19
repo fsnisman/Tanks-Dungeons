@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "DamageTraker.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "ProjecTile.generated.h"
 
 class UStaticMeshComponent;
@@ -29,6 +30,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
 		float Damage = 1;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* ExpotionEffect;
 
 	FTimerHandle MovementTimerHandle;
 

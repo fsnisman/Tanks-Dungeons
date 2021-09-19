@@ -7,6 +7,7 @@
 #include "Cannon.h"
 #include "Components/BoxComponent.h"
 #include "DamageTraker.h"
+#include "Components/AudioComponent.h"
 #include "HealthComponent.h"
 #include "TankPawn.generated.h"
 
@@ -84,6 +85,13 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UBoxComponent* HitCollider;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* AudioEffectStopped;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* AudioEffectMoved;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UAudioComponent* AudioEffectDie;
 
 
 	UPROPERTY()

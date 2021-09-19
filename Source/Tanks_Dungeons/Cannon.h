@@ -6,7 +6,11 @@
 #include "GameStructs.h"
 #include "ProjecTile.h"
 #include "DamageTraker.h"
+#include "Components/AudioComponent.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/ForceFeedbackEffect.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Camera/CameraShake.h"
 #include "Cannon.generated.h"
 
 class UArrowComponent;
@@ -45,6 +49,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		TSubclassOf<AProjecTile> ProjecTileClassSpecial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+		UForceFeedbackEffect* ShootForceEffect;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UMatineeCameraShake> ShootShake;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		int32 MaxAmmo = 15;

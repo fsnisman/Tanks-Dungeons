@@ -47,15 +47,24 @@ ATankPawn::ATankPawn()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	AudioEffectStopped = CreateDefaultSubobject<UAudioComponent>(TEXT("Engine Tank Stopped"));
+	AudioEffectStopped->SetupAttachment(BodyMesh);
+	AudioEffectMoved = CreateDefaultSubobject<UAudioComponent>(TEXT("Engine Tank Move"));
+	AudioEffectMoved->SetupAttachment(BodyMesh);
+	AudioEffectDie = CreateDefaultSubobject<UAudioComponent>(TEXT("Tank Die"));
+	AudioEffectDie->SetupAttachment(BodyMesh);
 }
 
 void ATankPawn::MoveForward(float AxisValue) 
 {
+	AudioEffectMoved->Play();
 	TargetForwardAxisValue = AxisValue;
 }
 
 void ATankPawn::RotateRight(float AxisValue)
 {
+	AudioEffectMoved->Play();
 	TargetRightAxisValue = AxisValue;
 }
 
@@ -65,6 +74,7 @@ void ATankPawn::BeginPlay()
 	Super::BeginPlay();
 	TankController = Cast<ATankPlayerController>(GetController());
 
+	AudioEffectStopped->Play();
 	SetupCannon(CannonClass);
 }
 
@@ -153,6 +163,7 @@ void ATankPawn::Tick(float DeltaTime)
 		FVector mousePos = TankController->GetMousePos();
 		RotateTurretTo(mousePos);
 	}
+
 }
 
 bool ATankPawn::TakeDamage(FDamageData DamageData)
@@ -162,6 +173,9 @@ bool ATankPawn::TakeDamage(FDamageData DamageData)
 
 void ATankPawn::Die()
 {
+	AudioEffectDie->Play();
+	AudioEffectStopped->Stop();
+	AudioEffectMoved->Stop();
 	Destroy();
 }
 

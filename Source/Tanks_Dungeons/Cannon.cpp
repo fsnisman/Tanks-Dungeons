@@ -66,6 +66,22 @@ void ACannon::Fire()
 
 	--NumAmmo;
 
+	if (GetOwner() && GetOwner() == GetWorld()->GetFirstPlayerController()->GetPawn())
+	{
+		if (ShootForceEffect)
+		{
+			FForceFeedbackParameters shootForceEffectParams;
+			shootForceEffectParams.bLooping = false;
+			shootForceEffectParams.Tag = "shootForceEffectParams";
+			GetWorld()->GetFirstPlayerController()->ClientPlayForceFeedback(ShootForceEffect, shootForceEffectParams);
+		}
+
+		if (ShootShake)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(ShootShake);
+		}
+	}
+
 	if (Type == ECannonType::FireProjectile)
 	{
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
@@ -136,7 +152,27 @@ void ACannon::FireSpecial()
 	}
 	ReadyToFire = false;
 
+	ShootEffect->ActivateSystem();
+	AudioEffect->Play();
+
 	--NumAmmoSpecial;
+
+	if (GetOwner() && GetOwner() == GetWorld()->GetFirstPlayerController()->GetPawn())
+	{
+		if (ShootForceEffect)
+		{
+			FForceFeedbackParameters shootForceEffectParams;
+			shootForceEffectParams.bLooping = false;
+			shootForceEffectParams.Tag = "shootForceEffectParams";
+			GetWorld()->GetFirstPlayerController()->ClientPlayForceFeedback(ShootForceEffect, shootForceEffectParams);
+		}
+
+		if (ShootShake)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(ShootShake);
+		}
+	}
+
 
 	if (Type == ECannonType::FireProjectile)
 	{
