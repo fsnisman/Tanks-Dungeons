@@ -66,6 +66,8 @@ void ACannon::Fire()
 		AProjecTile* projectile = GetWorld()->SpawnActor<AProjecTile>(ProjecTileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 		if (projectile) 
 		{
+			projectile->SetInstigator(GetInstigator());
+			projectile->OnDestroyedTarget.AddUObject(this, &ACannon::NotifytargetDestroed);
 			projectile->Start();
 		}
 	}
@@ -156,6 +158,13 @@ void ACannon::Reload()
 	ReadyToFire = true;
 }
 
+void ACannon::NotifytargetDestroed(AActor* Target)
+{
+	if (OnDestroyedTarget.IsBound())
+	{
+		OnDestroyedTarget.Broadcast(Target);
+	}
+}
 
 // Called when the game starts or when spawned
 void ACannon::BeginPlay()

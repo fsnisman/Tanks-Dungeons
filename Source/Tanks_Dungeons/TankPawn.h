@@ -45,7 +45,10 @@ public:
 		void SwapCannon();
 
 	UFUNCTION()
-		void TakeDamage(FDamageData DamageData) override;
+		bool TakeDamage(FDamageData DamageData) override;
+
+	UFUNCTION()
+		void TargetDestroyed(AActor* Target);
 
 	UFUNCTION()
 		ACannon* GetActiveCannon() const;
@@ -92,6 +95,7 @@ protected:
 	UPROPERTY()
 		ACannon* InactiveCannon;
 
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 100.f;
 
@@ -113,10 +117,14 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
+	//virtual void TargetDestroyed(AActor* Target);
 
 private:
 	float TargetForwardAxisValue = 0.f;
 	float TargetRightAxisValue = 0.f;
 	float CurrentRightAxisValue = 0.f;
 	float CurrentForwardAxisValue = 0.f;
+
+	int32 AccumulatedScores = 0;
 };

@@ -8,11 +8,13 @@
 #include "GameFramework/Actor.h"
 #include "Cannon.h"
 #include "DamageTraker.h"
+#include "TankPawn.h"
 #include "HealthComponent.h"
+#include "Scorable.h"
 #include "Turret.generated.h"
 
 UCLASS()
-class TANKS_DUNGEONS_API ATurret : public AActor, public IDamageTraker
+class TANKS_DUNGEONS_API ATurret : public AActor, public IDamageTraker, public IScorable
 {
 	GENERATED_BODY()
 
@@ -48,6 +50,8 @@ protected:
         float TargetingRate = 0.005f;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
         float Accurency = 20;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scorce")
+        int32 DestructionScores = 0;
 
     const FString BodyMeshPath = "StaticMesh'/Game/CSC/Meshes/SM_CSC_Tower1.SM_CSC_Tower1'";
     const FString TurretMeshPath = "StaticMesh'/Game/CSC/Meshes/SM_CSC_Gun1.SM_CSC_Gun1'";
@@ -56,7 +60,9 @@ public:
     ATurret();
 
     UFUNCTION()
-        void TakeDamage(FDamageData DamageData) override;
+        bool TakeDamage(FDamageData DamageData) override;
+    UFUNCTION()
+        int32 GetScores() const override;
 
 protected:
     virtual void Destroyed() override;
@@ -72,4 +78,5 @@ protected:
 
     UFUNCTION()
         void DamageTaken(float InDamage);
+
 };

@@ -107,9 +107,9 @@ void ATurret::Fire()
 		Cannon->Fire();
 }
 
-void ATurret::TakeDamage(FDamageData DamageData)
+bool ATurret::TakeDamage(FDamageData DamageData)
 {
-	HealthComponent->TakeDamage(DamageData);
+	return HealthComponent->TakeDamage(DamageData);
 }
 
 void ATurret::Die()
@@ -122,3 +122,7 @@ void ATurret::DamageTaken(float InDamage)
 	UE_LOG(LogTemp, Warning, TEXT("Turret %s taked damage:%f "), *GetName(), InDamage);
 }
 
+int32 ATurret::GetScores() const
+{
+	return DestructionScores;
+}

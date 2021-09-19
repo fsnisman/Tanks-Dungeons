@@ -3,6 +3,7 @@
 
 #include "TankPawn.h"
 #include "Cannon.h"
+#include "Scorable.h"
 #include <Camera/CameraComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include "Components/ArrowComponent.h"
@@ -80,6 +81,7 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> InCannonClass)
 	params.Owner = this;
 	ActiveCannon = GetWorld()->SpawnActor<ACannon>(InCannonClass, params);
 	ActiveCannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	ActiveCannon->OnDestroyedTarget.AddUObject(this, &ATankPawn::TargetDestroyed);
 }
 
 void ATankPawn::SwapCannon()
@@ -157,9 +159,9 @@ void ATankPawn::Tick(float DeltaTime)
 	}
 }
 
-void ATankPawn::TakeDamage(FDamageData DamageData)
+bool ATankPawn::TakeDamage(FDamageData DamageData)
 {
-	HealthComponent->TakeDamage(DamageData);
+	return HealthComponent->TakeDamage(DamageData);
 }
 
 void ATankPawn::Die()
@@ -170,4 +172,13 @@ void ATankPawn::Die()
 void ATankPawn::DamageTaked(float DamageValue)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(), DamageValue, HealthComponent->GetHealth());
+}
+
+void ATankPawn::TargetDestroyed(AActor* Target)
+{
+	if (IScorable* Scorable = Cast<IScorable>(Target))
+	{
+		AccumulatedScores += Scorable->GetScores();
+		UE_LOG(LogTemp, Log, TEXT("Destroyed target %s. Curret scores: %d"), *Target->GetName(), AccumulatedScores);
+	}
 }

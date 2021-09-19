@@ -64,10 +64,15 @@ public:
 	void AddAmmo(int32 InNumAmmo);
 	void AddAmmoSpecial(int32 InNumAmmo);
 
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnDestroyedTarger, AActor*);
+	FOnDestroyedTarger OnDestroyedTarget;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void Reload();
+
+	void NotifytargetDestroed(AActor* Target);
 
 public:	
 	// Called every frame

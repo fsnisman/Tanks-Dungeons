@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "Components/StaticMeshComponent.h"
 #include "ProjecTile.h"
+#include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
 #include "DamageTraker.h"
 
@@ -34,9 +33,11 @@ void AProjecTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 {
 	UE_LOG(LogTemp, Warning, TEXT("Projectile %s collided with %s. "), *GetName(), *OtherActor->GetName());
 
+	bool bWasTargetDestroyed = false;
 	if (OtherComp && OtherComp->GetCollisionObjectType() == ECollisionChannel::ECC_Destructible)
 	{
 		OtherActor->Destroy();
+		bWasTargetDestroyed = true;
 	}
 	else if (IDamageTraker* DamageTraker = Cast<IDamageTraker>(OtherActor)) 
 	{
@@ -48,10 +49,17 @@ void AProjecTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 			DamageData.DamageMaker = this;
 			DamageData.Instigator = MyInstigator;
 			DamageTraker->TakeDamage(DamageData);
+			bWasTargetDestroyed = DamageTraker->TakeDamage(DamageData);
 		}
+	}
+
+	if (bWasTargetDestroyed && OnDestroyedTarget.IsBound())
+	{
+		OnDestroyedTarget.Broadcast(OtherActor);
 	}
 	
 	Destroy();
+	OnDestroyedTarget.Clear();
 }
 
 void AProjecTile::Move()

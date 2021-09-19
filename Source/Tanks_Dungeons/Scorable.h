@@ -4,12 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "GameStructs.h"
-#include "DamageTraker.generated.h"
+#include "Scorable.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UDamageTraker : public UInterface
+class UScorable : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -17,11 +16,11 @@ class UDamageTraker : public UInterface
 /**
  * 
  */
-class TANKS_DUNGEONS_API IDamageTraker
+class TANKS_DUNGEONS_API IScorable
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual bool TakeDamage(FDamageData DamageData) = 0;
+	virtual int32 GetScores() const { return 0; }
 };

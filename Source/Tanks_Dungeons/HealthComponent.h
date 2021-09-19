@@ -35,7 +35,7 @@ public:
     // Sets default values for this component's properties
     UHealthComponent();
 
-    void TakeDamage(FDamageData DamageData);
+    bool TakeDamage(FDamageData DamageData);
 
     virtual void BeginPlay() override;
 
