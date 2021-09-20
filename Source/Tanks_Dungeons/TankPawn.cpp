@@ -147,9 +147,20 @@ void ATankPawn::Tick(float DeltaTime)
 	SetActorLocation(MovePosition, true);
 
 	// Tank Rotation
-	CurrentRightAxisValue = FMath::FInterpTo(CurrentRightAxisValue, TargetRightAxisValue, DeltaTime, RotationSmootheness);
-	TargetRightAxisValue = CurrentRightAxisValue;
-
+	if (bIsTurretTargetSet)
+	{
+		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TurretTarget);
+		FRotator CurreRotation = TurretMesh->GetComponentRotation();
+		TargetRotation.Pitch = CurreRotation.Pitch;
+		TargetRotation.Roll = TargetRotation.Roll;
+		TurretMesh->SetWorldRotation(FMath::RInterpConstantTo(CurreRotation, TargetRotation, DeltaTime, TurretRotationSpeed));
+	}
+	else
+	{
+		FRotator NewRotation = TurretMesh->GetComponentRotation();
+		NewRotation.Yaw += TurretRotationSpeed * DeltaTime * TurretRotationAxis;
+		TurretMesh->SetWorldRotation(NewRotation);
+	}
 	//UE_LOG(LogTemp, Warning, TEXT("CurrentRightAxisValue = %f TargetRightAxisValue = %f"), CurrentRightAxisValue, TargetRightAxisValue);
 
 	FRotator CurrentRotation = GetActorRotation();
@@ -166,6 +177,17 @@ void ATankPawn::Tick(float DeltaTime)
 		RotateTurretTo(mousePos);
 	}
 
+}
+
+void ATankPawn::SetTurretRotationAxis(float AxisValue)
+{
+	TurretRotationAxis = AxisValue;
+	bIsTurretTargetSet = false;
+}
+void ATankPawn::SetTurretTarget(FVector TargetPosition)
+{
+	TurretTarget = TargetPosition;
+	bIsTurretTargetSet = true;
 }
 
 bool ATankPawn::TakeDamage(FDamageData DamageData)

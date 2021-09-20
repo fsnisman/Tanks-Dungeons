@@ -17,12 +17,14 @@ void ATankPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("RotateRight", this, &ATankPlayerController::RotateRight);
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ATankPlayerController::Fire);
 	InputComponent->BindAction("FireSpecial", IE_Pressed, this, &ATankPlayerController::FireSpecial);
+	InputComponent->BindAxis("RotateTurretRight");
 }
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetMousePosition(LastFrameMousePosition.X, LastFrameMousePosition.Y);
 	TankPawn = Cast<ATankPawn>(GetPawn());
 }
 
@@ -65,11 +67,36 @@ void ATankPlayerController::Tick(float DeltaTime)
 	FVector mouseDirection;
 	DeprojectMousePositionToWorld(MousePos, mouseDirection);
 
-	if (TankPawn != nullptr) {
-		FVector pawnPos = TankPawn->GetActorLocation();
-		MousePos.Z = pawnPos.Z;
-		FVector dir = MousePos - pawnPos;
-		dir.Normalize();
-		MousePos = pawnPos + dir * 1000;
+	if (!TankPawn) {
+		return;
+	}
+
+	FVector2D MouseScreenPosition;
+	GetMousePosition(MouseScreenPosition.X, MouseScreenPosition.Y);
+	bool bWasMouseMoved = !LastFrameMousePosition.Equals(MouseScreenPosition);
+	LastFrameMousePosition = MouseScreenPosition;
+
+	if (TankPawn)
+	{
+		float TurretRotationAxis = GetInputAxisValue("RotateTurretRight");
+		if (FMath::IsNearlyZero(TurretRotationAxis) && (bWasMouseMoved || bIsControllingFromMouse))
+		{
+			bIsControllingFromMouse = true;
+			FVector WorldMousePosition, MouseDirection;
+			DeprojectMousePositionToWorld(WorldMousePosition, MouseDirection);
+
+			FVector PawnPos = TankPawn->GetActorLocation();
+			WorldMousePosition.Z = PawnPos.Z;
+			FVector NewTurretDirection = WorldMousePosition - PawnPos;
+			NewTurretDirection.Normalize();
+
+			FVector TurretTarget = PawnPos + NewTurretDirection * 1000.f;
+			TankPawn->SetTurretTarget(TurretTarget);
+		}
+		else
+		{
+			bIsControllingFromMouse = false;
+			TankPawn->SetTurretRotationAxis(TurretRotationAxis);
+		}
 	}
 }

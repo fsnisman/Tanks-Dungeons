@@ -27,6 +27,8 @@ public:
 	virtual void SetupInputComponent() override;
 	virtual void Tick(float DeltaTime) override;
 	FVector GetMousePos() { return MousePos; };
+	bool bIsControllingFromMouse = false;
+	FVector2D LastFrameMousePosition;
 
 protected:
 	virtual void BeginPlay() override;

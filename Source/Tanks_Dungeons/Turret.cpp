@@ -50,7 +50,7 @@ void ATurret::BeginPlay()
 	params.Owner = this;
 	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-
+	
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 
 	FTimerHandle _targetingTimerHandle;
@@ -94,6 +94,7 @@ bool ATurret::IsPlayerInRange()
 
 bool ATurret::CanFire()
 {
+
 	FVector targetingDir = TurretMesh->GetForwardVector();
 	FVector dirToPlayer = PlayerPawn->GetActorLocation() - GetActorLocation();
 	dirToPlayer.Normalize();

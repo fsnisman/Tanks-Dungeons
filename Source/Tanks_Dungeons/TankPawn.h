@@ -55,6 +55,12 @@ public:
 	UFUNCTION()
 		ACannon* GetActiveCannon() const;
 
+	UFUNCTION()
+		void SetTurretRotationAxis(float AxisValue);
+
+	UFUNCTION()
+		void SetTurretTarget(FVector TargetPosition);
+
 protected:
 	UFUNCTION()
 		void Die();
@@ -164,6 +170,10 @@ private:
 	float TargetRightAxisValue = 0.f;
 	float CurrentRightAxisValue = 0.f;
 	float CurrentForwardAxisValue = 0.f;
+	float TurretRotationAxis = 0.f;
+	FVector TurretTarget;
+
+	bool bIsTurretTargetSet = false;
 
 	int32 AccumulatedScores = 0;
 };
