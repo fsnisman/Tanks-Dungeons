@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "DamageTraker.h"
 #include "Particles/ParticleSystemComponent.h"
+#include <Kismet/GameplayStatics.h>
 #include "ProjecTile.generated.h"
 
 class UStaticMeshComponent;
@@ -32,7 +33,7 @@ protected:
 		float Damage = 1;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UParticleSystemComponent* ExpotionEffect;
+		UParticleSystem* ExpotionEffect;
 
 	FTimerHandle MovementTimerHandle;
 

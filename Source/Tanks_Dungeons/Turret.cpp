@@ -126,3 +126,27 @@ int32 ATurret::GetScores() const
 {
 	return DestructionScores;
 }
+
+bool ATurret::DetectPlayerVisibility()
+{
+	FVector playerPos = PlayerPawn->GetActorLocation();
+	FVector eyesPos = TankPawn->GetEyesPosition();
+
+	FHitResult hitResult;
+	FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+	traceParams.bTraceComplex = true;
+	traceParams.AddIgnoredActor(TankPawn);
+	traceParams.bReturnPhysicalMaterial = false;
+
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, eyesPos, playerPos, ECollisionChannel::ECC_Visibility, traceParams))
+	{
+
+		if (hitResult.Actor.Get())
+		{
+			//DrawDebugLine(GetWorld(), eyesPos, hitResult.Location, FColor::Cyan, false, 0.5f, 0, 10);
+			return hitResult.Actor.Get() == PlayerPawn;
+		}
+	}
+	return false;
+}
+

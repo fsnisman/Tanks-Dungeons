@@ -20,8 +20,7 @@ AProjecTile::AProjecTile()
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AProjecTile::OnMeshOverlapBegin);
 	Mesh->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 
-	ExpotionEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Shooting effect"));
-	ExpotionEffect->SetupAttachment(RootComponent);
+	ExpotionEffect = CreateDefaultSubobject<UParticleSystem>(TEXT("Shooting effect"));
 }
 
 
@@ -39,7 +38,7 @@ void AProjecTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 	bool bWasTargetDestroyed = false;
 	if (OtherComp && OtherComp->GetCollisionObjectType() == ECollisionChannel::ECC_Destructible)
 	{
-		ExpotionEffect->ActivateSystem();
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExpotionEffect, GetActorTransform());
 		OtherActor->Destroy();
 		bWasTargetDestroyed = true;
 	}
@@ -48,7 +47,7 @@ void AProjecTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 		AActor* MyInstigator = GetInstigator();
 		if (OtherActor != MyInstigator)
 		{
-			ExpotionEffect->ActivateSystem();
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExpotionEffect, GetActorTransform());
 			FDamageData DamageData;
 			DamageData.DamageValue = Damage;
 			DamageData.DamageMaker = this;
@@ -60,11 +59,11 @@ void AProjecTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 
 	if (bWasTargetDestroyed && OnDestroyedTarget.IsBound())
 	{
-		ExpotionEffect->ActivateSystem();
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExpotionEffect, GetActorTransform());
 		OnDestroyedTarget.Broadcast(OtherActor);
 	}
 	
-	ExpotionEffect->ActivateSystem();
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExpotionEffect, GetActorTransform());
 	Destroy();
 	OnDestroyedTarget.Clear();
 }

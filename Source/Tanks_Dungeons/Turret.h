@@ -41,6 +41,8 @@ protected:
         ACannon* Cannon;
     UPROPERTY()
         APawn* PlayerPawn;
+    UPROPERTY()
+        ATankPawn* TankPawn;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
         float TargetingRange = 1000;
@@ -65,6 +67,7 @@ public:
         int32 GetScores() const override;
 
 protected:
+    bool DetectPlayerVisibility();
     virtual void Destroyed() override;
     void Targeting();
     void RotateToPlayer();

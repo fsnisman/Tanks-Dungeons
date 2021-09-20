@@ -10,6 +10,7 @@
 #include <GameFramework/SpringArmComponent.h>
 #include <Math/UnrealMathUtility.h>
 #include <Kismet/KismetMathLibrary.h>
+#include <Kismet/GameplayStatics.h>
 #include "TankPlayerController.h"
 
 //DECLARE_LOG_CATEGORY_EXTERN(TankLog, All, All);
@@ -48,12 +49,13 @@ ATankPawn::ATankPawn()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
+	EffectDie = CreateDefaultSubobject<UParticleSystem>(TEXT("Die effect"));
+
 	AudioEffectStopped = CreateDefaultSubobject<UAudioComponent>(TEXT("Engine Tank Stopped"));
 	AudioEffectStopped->SetupAttachment(BodyMesh);
 	AudioEffectMoved = CreateDefaultSubobject<UAudioComponent>(TEXT("Engine Tank Move"));
 	AudioEffectMoved->SetupAttachment(BodyMesh);
-	AudioEffectDie = CreateDefaultSubobject<UAudioComponent>(TEXT("Tank Die"));
-	AudioEffectDie->SetupAttachment(BodyMesh);
+	AudioEffectDie = CreateDefaultSubobject<USoundBase>(TEXT("Tank Die"));
 }
 
 void ATankPawn::MoveForward(float AxisValue) 
@@ -173,9 +175,9 @@ bool ATankPawn::TakeDamage(FDamageData DamageData)
 
 void ATankPawn::Die()
 {
-	AudioEffectDie->Play();
-	AudioEffectStopped->Stop();
-	AudioEffectMoved->Stop();
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EffectDie, GetActorTransform());
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), AudioEffectDie, GetActorLocation());
+
 	Destroy();
 }
 
