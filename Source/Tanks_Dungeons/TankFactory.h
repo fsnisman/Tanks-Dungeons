@@ -16,11 +16,12 @@
 #include "HealthComponent.h"
 #include "Engine/TargetPoint.h"
 #include "GameFramework/Actor.h"
+#include "MapLoader.h"
 #include "TankFactory.generated.h"
 
 
 UCLASS()
-class TANKS_DUNGEONS_API ATankFactory : public AActor
+class TANKS_DUNGEONS_API ATankFactory : public AActor, public IDamageTraker
 {
 	GENERATED_BODY()
 	
@@ -34,6 +35,8 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UHealthComponent* HealthComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn tanks params")
+		AMapLoader* LinkedMapLoader;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn tanks params")
 		TSubclassOf<ATankPawn> SpawnTankClass;
@@ -49,7 +52,7 @@ public:
 	ATankFactory();
 
 	UFUNCTION()
-	bool TakeDamage(FDamageData DamageData);
+		bool TakeDamage(FDamageData DamageData) override;
 
 
 protected:
