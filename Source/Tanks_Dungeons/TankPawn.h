@@ -7,9 +7,11 @@
 #include "Cannon.h"
 #include "Components/BoxComponent.h"
 #include "DamageTraker.h"
+#include "Engine/TargetPoint.h"
 #include "Components/AudioComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "HealthComponent.h"
+#include "AmmoBox.h"
 #include "TankPawn.generated.h"
 
 
@@ -115,6 +117,9 @@ protected:
 	UPROPERTY()
 		ACannon* InactiveCannon;
 
+	UPROPERTY()
+		AAmmoBox* DestructionBonusBox;
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 100.f;
@@ -130,8 +135,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Speed")
 		float TurretRotationSpeed = 100.f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrol points", Meta = (MakeEditWidget = true))
-		TArray<FVector> PatrollingPoints;
+		TArray<ATargetPoint*> PatrollingPoints;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Accurency")
 		float MovementAccuracy = 50.f;
 
@@ -143,10 +150,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION()
-		const TArray<FVector>& GetPatrollingPoints() 
-	{ 
-		return PatrollingPoints; 
-	};
+		TArray<FVector> GetPatrollingPoints();
+
 	UFUNCTION()
 		float GetMovementAccurency() 
 	{ 
@@ -162,7 +167,9 @@ public:
 	UFUNCTION()
 		FVector GetEyesPosition();
 
-	
+	UFUNCTION()
+		void SetPatrollingPoints(TArray<ATargetPoint*>& NewPatrollingPoints);
+
 	//virtual void TargetDestroyed(AActor* Target);
 
 private:

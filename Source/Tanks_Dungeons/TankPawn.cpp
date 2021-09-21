@@ -199,6 +199,12 @@ void ATankPawn::Die()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), EffectDie, GetActorTransform());
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), AudioEffectDie, GetActorLocation());
+	if (DestructionBonusBox)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.bNoFail = true;
+		//GetWorld()->SpawnActor<AAmmoBox>(DestructionBonusBox, GetActorTransform(), SpawnParams);
+	}
 
 	Destroy();
 }
@@ -234,4 +240,20 @@ void ATankPawn::RotateTurretTo(FVector TargetPosition)
 FVector ATankPawn::GetEyesPosition()
 {
 	return CannonSetupPoint->GetComponentLocation();
+}
+
+TArray<FVector> ATankPawn::GetPatrollingPoints()
+{
+	TArray<FVector> Result;
+	for (ATargetPoint* point : PatrollingPoints)
+	{
+		Result.Add(point->GetActorLocation());
+	}
+
+	return Result;
+}
+
+void ATankPawn::SetPatrollingPoints(TArray<ATargetPoint*>& NewPatrollingPoints)
+{
+	PatrollingPoints = NewPatrollingPoints;
 }

@@ -9,22 +9,39 @@
 void ATankAIController::BeginPlay()
 {
     Super::BeginPlay();
-    TankPawn = Cast<ATankPawn>(GetPawn());
-    PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+    Initalize();    
+}
 
-    MovementAccuracy = TankPawn->GetMovementAccurency();
-    TArray<FVector> points = TankPawn->GetPatrollingPoints();
-    FVector pawnLocation = TankPawn->GetActorLocation();
-    for (FVector point : points)
+void ATankAIController::Initalize()
+{
+    TankPawn = Cast<ATankPawn>(GetPawn());
+    if (TankPawn)
     {
-        PatrollingPoints.Add(point + pawnLocation);
+        PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+
+        MovementAccuracy = TankPawn->GetMovementAccurency();
+        TArray<FVector> points = TankPawn->GetPatrollingPoints();
+            
+        PatrollingPoints = TankPawn->GetPatrollingPoints();
+
+        CurrentPatrolPointIndex = PatrollingPoints.Num() == 0 ? INDEX_NONE : 0;
     }
-    CurrentPatrolPointIndex = PatrollingPoints.Num() == 0 ? INDEX_NONE : 0;
 }
 
 void ATankAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    if (!TankPawn)
+    {
+        Initalize();
+    }
+    
+    if (!TankPawn)
+    {
+        return;
+    }
+
     if (CurrentPatrolPointIndex == INDEX_NONE)
     {
         TankPawn->MoveForward(0.f);

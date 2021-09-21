@@ -49,4 +49,5 @@ protected:
 	bool DetectCanFire();
 	void Fire();
 	bool DetectPlayerVisibility();
+	void Initalize();
 };
