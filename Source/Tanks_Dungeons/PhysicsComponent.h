@@ -15,6 +15,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gravity params")
 		float Gravity = -9.8f;
 public:
-	TArray<FVector> GenerateTrajectory(FVector StartPos, FVector Velocity, float MaxTime, float TimeStep, float MinZValue = 0);
+	TArray<FVector> GenerateTrajectory(FVector StartPos, FVector Velocity, float MaxTime, float TimeStep, float MinZValue);
 		
+	FVector CalculateBezierPoint(float t, FVector p0, FVector p1, FVector p2, FVector p3);
 };

@@ -27,18 +27,6 @@ ATurret::ATurret()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
 	HealthComponent->OnDie.AddDynamic(this, &ATurret::Die);
 	HealthComponent->OnDamaged.AddDynamic(this, &ATurret::DamageTaken);
-
-	UStaticMesh* turretMeshTemp = LoadObject<UStaticMesh>(this, *TurretMeshPath);
-	if (turretMeshTemp)
-	{
-		TurretMesh->SetStaticMesh(turretMeshTemp);
-	}
-
-	UStaticMesh* bodyMeshTemp = LoadObject<UStaticMesh>(this, *BodyMeshPath);
-	if (bodyMeshTemp) 
-	{
-		BodyMesh->SetStaticMesh(bodyMeshTemp);
-	}
 }
 
 // Called when the game starts or when spawned
@@ -55,14 +43,6 @@ void ATurret::BeginPlay()
 
 	FTimerHandle _targetingTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this, &ATurret::Targeting, TargetingRate, true, TargetingRate);
-
-	// UStaticMesh * turretMeshTemp = LoadObject<UStaticMesh>(this, *TurretMeshPath);
-	// if(turretMeshTemp)
-	//     TurretMesh->SetStaticMesh(turretMeshTemp);
-	//
-	// UStaticMesh * bodyMeshTemp = LoadObject<UStaticMesh>(this, *BodyMeshPath);
-	// if(bodyMeshTemp)
-	//     BodyMesh->SetStaticMesh(bodyMeshTemp);
 }
 
 void ATurret::PostInitializeComponents()
