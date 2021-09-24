@@ -112,7 +112,7 @@ void AProjecTile::Explode()
 			startPos,
 			endPos,
 			Rotation,
-			ECollisionChannel::ECC_Visibility,
+			ECollisionChannel::ECC_MAX,
 			Shape,
 			params
 		);
