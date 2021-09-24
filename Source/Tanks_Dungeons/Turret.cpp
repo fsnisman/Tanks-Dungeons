@@ -55,7 +55,29 @@ void ATurret::BeginPlay()
 
 	FTimerHandle _targetingTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this, &ATurret::Targeting, TargetingRate, true, TargetingRate);
+
+	// UStaticMesh * turretMeshTemp = LoadObject<UStaticMesh>(this, *TurretMeshPath);
+	// if(turretMeshTemp)
+	//     TurretMesh->SetStaticMesh(turretMeshTemp);
+	//
+	// UStaticMesh * bodyMeshTemp = LoadObject<UStaticMesh>(this, *BodyMeshPath);
+	// if(bodyMeshTemp)
+	//     BodyMesh->SetStaticMesh(bodyMeshTemp);
 }
+
+void ATurret::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	UStaticMesh* turretMeshTemp = LoadObject<UStaticMesh>(this, *TurretMeshPath);
+	if (turretMeshTemp)
+		TurretMesh->SetStaticMesh(turretMeshTemp);
+
+	UStaticMesh* bodyMeshTemp = LoadObject<UStaticMesh>(this, *BodyMeshPath);
+	if (bodyMeshTemp)
+		BodyMesh->SetStaticMesh(bodyMeshTemp);
+}
+
 
 void ATurret::Destroyed()
 {
@@ -141,7 +163,6 @@ bool ATurret::DetectPlayerVisibility()
 
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, eyesPos, playerPos, ECollisionChannel::ECC_Visibility, traceParams))
 	{
-
 		if (hitResult.Actor.Get())
 		{
 			//DrawDebugLine(GetWorld(), eyesPos, hitResult.Location, FColor::Cyan, false, 0.5f, 0, 10);
@@ -149,5 +170,6 @@ bool ATurret::DetectPlayerVisibility()
 		}
 	}
 	return false;
+
 }
 

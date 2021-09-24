@@ -20,7 +20,7 @@ AProjecTile::AProjecTile()
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AProjecTile::OnMeshOverlapBegin);
 	Mesh->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 
-	ExpotionEffect = CreateDefaultSubobject<UParticleSystem>(TEXT("Shooting effect"));
+	//ExpotionEffect = CreateDefaultSubobject<UParticleSystem>(TEXT("Shooting effect"));
 }
 
 
@@ -55,6 +55,19 @@ void AProjecTile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 			DamageTraker->TakeDamage(DamageData);
 			bWasTargetDestroyed = DamageTraker->TakeDamage(DamageData);
 		}
+	}
+	else
+	{
+		UPrimitiveComponent* PrimCompont = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
+		if (PrimCompont)
+		{
+			if (PrimCompont->IsSimulatingPhysics())
+			{
+				FVector forceVector = OtherActor->GetActorLocation() - GetActorLocation();
+				PrimCompont->AddImpulseAtLocation(forceVector * PushForce, SweepResult.ImpactPoint);
+			}
+		}
+
 	}
 
 	if (bWasTargetDestroyed && OnDestroyedTarget.IsBound())

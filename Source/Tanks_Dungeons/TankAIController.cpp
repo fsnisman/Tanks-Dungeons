@@ -146,11 +146,11 @@ bool ATankAIController::DetectPlayerVisibility()
 
             if (hitResult.Actor.Get())
             {
-                DrawDebugLine(GetWorld(), eyesPos, hitResult.Location, FColor::Cyan, false, 0.5f, 0, 10);
+                //DrawDebugLine(GetWorld(), eyesPos, hitResult.Location, FColor::Cyan, false, 0.5f, 0, 10);
                 return hitResult.Actor.Get() == PlayerPawn;
             }
         }
-        DrawDebugLine(GetWorld(), eyesPos, playerPos, FColor::Cyan, false, 0.5f, 0, 10);
+        //DrawDebugLine(GetWorld(), eyesPos, playerPos, FColor::Cyan, false, 0.5f, 0, 10);
         //return false;
     }
     return false;

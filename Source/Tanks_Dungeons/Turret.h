@@ -66,6 +66,8 @@ public:
     UFUNCTION()
         int32 GetScores() const override;
 
+    virtual void PostInitializeComponents() override;
+
 protected:
     bool DetectPlayerVisibility();
     virtual void Destroyed() override;
