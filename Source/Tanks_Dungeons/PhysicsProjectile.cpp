@@ -54,63 +54,66 @@ void APhysicsProjectile::Move()
 
 void APhysicsProjectile::Explode()
 {
-    FVector startPos = GetActorLocation();
-    FVector endPos = startPos + FVector(0.1f);
-
-    FCollisionShape Shape = FCollisionShape::MakeSphere(ExplodeRadius);
-    FCollisionQueryParams params = FCollisionQueryParams::DefaultQueryParam;
-    params.AddIgnoredActor(this);
-    params.bTraceComplex = true;
-    params.TraceTag = "Explode Trace";
-    TArray<FHitResult> AttackHit;
-
-    FQuat Rotation = FQuat::Identity;
-
-    bool sweepResult = GetWorld()->SweepMultiByChannel
-    (
-        AttackHit,
-        startPos,
-        endPos,
-        Rotation,
-        ECollisionChannel::ECC_Visibility,
-        Shape,
-        params
-    );
-
-    //GetWorld()->DebugDrawTraceTag = "Explode Trace";
-
-    if (sweepResult)
+    if (EnableExlode == true)
     {
-        for (FHitResult hitResult : AttackHit)
+        FVector startPos = GetActorLocation();
+        FVector endPos = startPos + FVector(0.1f);
+
+        FCollisionShape Shape = FCollisionShape::MakeSphere(ExplodeRadius);
+        FCollisionQueryParams params = FCollisionQueryParams::DefaultQueryParam;
+        params.AddIgnoredActor(this);
+        params.bTraceComplex = true;
+        params.TraceTag = "Explode Trace";
+        TArray<FHitResult> AttackHit;
+
+        FQuat Rotation = FQuat::Identity;
+
+        bool sweepResult = GetWorld()->SweepMultiByChannel
+        (
+            AttackHit,
+            startPos,
+            endPos,
+            Rotation,
+            ECollisionChannel::ECC_Visibility,
+            Shape,
+            params
+        );
+
+        //GetWorld()->DebugDrawTraceTag = "Explode Trace";
+
+        if (sweepResult)
         {
-            AActor* otherActor = hitResult.GetActor();
-            if (!otherActor)
-                continue;
-
-            IDamageTraker* damageTrakerActor = Cast<IDamageTraker>(otherActor);
-            if (damageTrakerActor)
+            for (FHitResult hitResult : AttackHit)
             {
-                FDamageData damageData;
-                damageData.DamageValue = Damage;
-                damageData.Instigator = GetOwner();
-                damageData.DamageMaker = this;
+                AActor* otherActor = hitResult.GetActor();
+                if (!otherActor)
+                    continue;
 
-                damageTrakerActor->TakeDamage(damageData);
-            }
-            else
-            {
-                UPrimitiveComponent* PrimComp = Cast<UPrimitiveComponent>(otherActor->GetRootComponent());
-                if (PrimComp)
+                IDamageTraker* damageTrakerActor = Cast<IDamageTraker>(otherActor);
+                if (damageTrakerActor)
                 {
-                    if (PrimComp->IsSimulatingPhysics())
+                    FDamageData damageData;
+                    damageData.DamageValue = Damage;
+                    damageData.Instigator = GetOwner();
+                    damageData.DamageMaker = this;
+
+                    damageTrakerActor->TakeDamage(damageData);
+                }
+                else
+                {
+                    UPrimitiveComponent* PrimComp = Cast<UPrimitiveComponent>(otherActor->GetRootComponent());
+                    if (PrimComp)
                     {
-                        FVector forceVector = otherActor->GetActorLocation() - GetActorLocation();
-                        forceVector.Normalize();
-                        PrimComp->AddImpulse(forceVector * PushForce, NAME_None, true);
+                        if (PrimComp->IsSimulatingPhysics())
+                        {
+                            FVector forceVector = otherActor->GetActorLocation() - GetActorLocation();
+                            forceVector.Normalize();
+                            PrimComp->AddImpulse(forceVector * PushForce, NAME_None, true);
+                        }
                     }
                 }
-            }
 
+            }
         }
     }
 }

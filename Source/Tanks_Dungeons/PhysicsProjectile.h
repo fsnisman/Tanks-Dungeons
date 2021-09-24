@@ -32,6 +32,9 @@ protected:
 		bool ShowTrajectory = false;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
 		float ExplodeRadius = 50.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
+		bool EnableExlode = false;
+
 
 	UPROPERTY(BlueprintReadWrite, Category = "Movement params")
 		FVector MoveVector;
