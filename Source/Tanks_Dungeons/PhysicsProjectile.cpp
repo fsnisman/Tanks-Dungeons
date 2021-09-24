@@ -9,9 +9,6 @@
 APhysicsProjectile::APhysicsProjectile()
 {
     PhysicsComponent = CreateDefaultSubobject<UPhysicsComponent>(TEXT("PhysicsComponent"));
-
-    TrailEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Trail effect"));
-    TrailEffect->SetupAttachment(RootComponent);
 }
 
 void APhysicsProjectile::Start()

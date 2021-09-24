@@ -19,6 +19,8 @@ class TANKS_DUNGEONS_API AProjecTile : public AActor
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UParticleSystemComponent* TrailEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 100.f;
@@ -38,6 +40,29 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
 		float PushForce = 1000;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
+		float MoveAccurency = 10;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
+		float TrajectorySimulationMaxTime = 50;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
+		float TrajectorySimulationTimeStep = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
+		float TrajectorySimulationSpeed = 20;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
+		bool ShowTrajectory = false;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
+		float ExplodeRadius = 50.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
+		bool EnableExlode = false;
+
+
+	UPROPERTY(BlueprintReadWrite, Category = "Movement params")
+		FVector MoveVector;
+	UPROPERTY(BlueprintReadWrite, Category = "Movement params")
+		TArray<FVector> CurrentTrajectory;
+	UPROPERTY(BlueprintReadWrite, Category = "Movement params")
+		int32 TragectoryPointIndex;
+
 	FTimerHandle MovementTimerHandle;
 
 public:	
@@ -45,9 +70,11 @@ public:
 	AProjecTile();
 
 	virtual void Start();
+	virtual void Explode();
 
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnDestroyedTarger, AActor*);
 	FOnDestroyedTarger OnDestroyedTarget;
+
 
 protected:
 	UFUNCTION()
