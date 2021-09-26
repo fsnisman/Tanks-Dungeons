@@ -19,6 +19,8 @@ ATankFactory::ATankFactory()
 	BuildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Building Mesh"));
 	BuildingMesh->SetupAttachment(sceneComp);
 
+	DieBuildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DieBuilding Mesh"));
+	DieBuildingMesh->SetupAttachment(sceneComp);
 
 	TankSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Cannon setup point"));
 	TankSpawnPoint->AttachToComponent(sceneComp, FAttachmentTransformRules::KeepRelativeTransform);
@@ -29,11 +31,18 @@ ATankFactory::ATankFactory()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health component"));
 	HealthComponent->OnDie.AddDynamic(this, &ATankFactory::Die);
 	HealthComponent->OnDamaged.AddDynamic(this, &ATankFactory::DamageTaked);
+
+	EffectDie = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Die effect"));
+	EffectDie->SetupAttachment(sceneComp);
+
+	AudioEffectDie = CreateDefaultSubobject<UAudioComponent>(TEXT("Factory Die"));
+	AudioEffectDie->SetupAttachment(sceneComp);
 }
 
 void ATankFactory::BeginPlay()
 {
 	Super::BeginPlay();
+
 	if (LinkedMapLoader)
 	{
 		LinkedMapLoader->SetIsActivated(false);
@@ -50,11 +59,18 @@ bool ATankFactory::TakeDamage(FDamageData DamageData)
 
 void ATankFactory::Die()
 {
-	if (LinkedMapLoader)
+	if (!bDieFactory)
 	{
-		LinkedMapLoader->SetIsActivated(true);
+		if (LinkedMapLoader)
+		{
+			LinkedMapLoader->SetIsActivated(true);
+		}
+
+		BuildingMesh->DestroyComponent();
+		EffectDie->ActivateSystem();
+		AudioEffectDie->Play();
+		bDieFactory = true;
 	}
-	Destroy();
 }
 
 void ATankFactory::DamageTaked(float DamageValue)
@@ -64,13 +80,15 @@ void ATankFactory::DamageTaked(float DamageValue)
 
 void ATankFactory::SpawnNewTank()
 {
-	FTransform spawnTransform(TankSpawnPoint->GetComponentRotation(), TankSpawnPoint->GetComponentLocation(), FVector(1));
-	ATankPawn* newTank = GetWorld()->SpawnActorDeferred<ATankPawn>(SpawnTankClass, spawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-	//
-	newTank->SetPatrollingPoints(TankWayPoints);
-	//
-	UGameplayStatics::FinishSpawningActor(newTank, spawnTransform);
-
+	if (!bDieFactory)
+	{
+		FTransform spawnTransform(TankSpawnPoint->GetComponentRotation(), TankSpawnPoint->GetComponentLocation(), FVector(1));
+		ATankPawn* newTank = GetWorld()->SpawnActorDeferred<ATankPawn>(SpawnTankClass, spawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		//
+		newTank->SetPatrollingPoints(TankWayPoints);
+		//
+		UGameplayStatics::FinishSpawningActor(newTank, spawnTransform);
+	}
 }
 
 

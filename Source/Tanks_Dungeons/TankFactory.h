@@ -34,6 +34,8 @@ protected:
 		UBoxComponent* HitCollider;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 		UHealthComponent* HealthComponent;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UStaticMeshComponent* DieBuildingMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn tanks params")
 		AMapLoader* LinkedMapLoader;
@@ -47,6 +49,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn tanks params")
 		TArray<ATargetPoint*> TankWayPoints;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+		UAudioComponent* AudioEffectDie;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+		UParticleSystemComponent* EffectDie;
+
 public:
 	// Sets default values for this actor's properties
 	ATankFactory();
@@ -54,6 +62,7 @@ public:
 	UFUNCTION()
 		bool TakeDamage(FDamageData DamageData) override;
 
+	bool bDieFactory = false;
 
 protected:
 	// Called when the game starts or when spawned
