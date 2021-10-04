@@ -16,7 +16,6 @@
 //DECLARE_LOG_CATEGORY_EXTERN(TankLog, All, All);
 //DEFINE_LOG_CATEGORY(TankLog);
 
-
 // Sets default values
 ATankPawn::ATankPawn()
 {
@@ -56,6 +55,10 @@ ATankPawn::ATankPawn()
 	AudioEffectMoved = CreateDefaultSubobject<UAudioComponent>(TEXT("Engine Tank Move"));
 	AudioEffectMoved->SetupAttachment(BodyMesh);
 	AudioEffectDie = CreateDefaultSubobject<USoundBase>(TEXT("Tank Die"));
+
+	BarHP = CreateDefaultSubobject<UWidgetComponent>("BarHP");
+	BarHP->SetupAttachment(BodyMesh);
+	//BarHP->SetWidgetClass(UUserWidget::StaticClass());
 }
 
 void ATankPawn::MoveForward(float AxisValue) 
@@ -201,6 +204,7 @@ void ATankPawn::Die()
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), AudioEffectDie, GetActorLocation());
 	if (DestructionBonusBox)
 	{
+		bDieTankPawn = true;
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.bNoFail = true;
 		//GetWorld()->SpawnActor<AAmmoBox>(DestructionBonusBox, GetActorTransform(), SpawnParams);

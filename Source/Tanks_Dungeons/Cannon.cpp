@@ -56,7 +56,7 @@ void ACannon::Fire()
 	}
 	if(NumAmmo <= 0)
 	{
-		GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, "No Ammo");
+		//GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, "No Ammo");
 		return;
 	}
 	ReadyToFire = false;
@@ -84,7 +84,7 @@ void ACannon::Fire()
 
 	if (Type == ECannonType::FireProjectile)
 	{
-		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
+		//GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - projectile");
 
 		FTransform projectileTransform(ProjectileSpawnPoint->GetComponentRotation(), ProjectileSpawnPoint->GetComponentLocation(), FVector(1));
 
@@ -147,7 +147,7 @@ void ACannon::FireSpecial()
 	}
 	if(NumAmmoSpecial <= 0)
 	{
-		GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, "No Ammo");
+		//GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, "No Ammo");
 		return;
 	}
 	ReadyToFire = false;
@@ -178,7 +178,7 @@ void ACannon::FireSpecial()
 	{
 		for (int i = 0; i < 3; i++) {
 
-			GEngine->AddOnScreenDebugMessage(0, 1, FColor::Green, "Fire - special");
+			//GEngine->AddOnScreenDebugMessage(0, 1, FColor::Green, "Fire - special");
 
 			FTransform projectileTransform(ProjectileSpawnPoint->GetComponentRotation(), ProjectileSpawnPoint->GetComponentLocation(), FVector(1));
 

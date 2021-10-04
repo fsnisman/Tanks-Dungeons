@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Cannon.h"
+#include "Components/WidgetComponent.h"
 #include "Components/BoxComponent.h"
 #include "DamageTraker.h"
 #include "Engine/TargetPoint.h"
@@ -107,7 +108,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 		UParticleSystem* EffectDie;
 
-
 	UPROPERTY()
 		ATankPlayerController* TankController;
 
@@ -142,6 +142,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Accurency")
 		float MovementAccuracy = 50.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Check Die Tank")
+		bool bDieTankPawn = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Widget")
+		UWidgetComponent* BarHP;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

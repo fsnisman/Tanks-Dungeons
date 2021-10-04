@@ -18,13 +18,15 @@ class TANKS_DUNGEONS_API UHealthComponent : public UActorComponent
 
 
 protected:
+    
+
+public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
         float MaxHealth = 10;
 
-    UPROPERTY()
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health values")
         float CurrentHealth;
 
-public:
     UPROPERTY(BlueprintAssignable)
     FOnDie OnDie;
 
